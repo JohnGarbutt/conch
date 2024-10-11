@@ -295,10 +295,14 @@ async fn sign(
     }
     let short_name = claims.short_name;
 
-    let principals: Vec<String> = projects
+    let mut principals: Vec<String> = projects
         .keys()
         .map(|p| format!("{short_name}.{}", p.0))
         .collect();
+    if !claims.email.is_empty() {
+        // TODO: make this opt in via config
+        principals.push(claims.email.clone());
+    };
     if principals.is_empty() {
         error!(
             "No valid principals from: user_projects={:?}, config_platforms={:?}",
